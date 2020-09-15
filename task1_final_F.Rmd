@@ -1,0 +1,208 @@
+---
+title: "Social Networks HW1"
+date: 24.03.2020
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  html_notebook: default
+authors: Andreas Opedal, Charlotte Out, Felix Ertingshausen, Nicolo Grometto
+---
+
+
+
+```{r}
+#installing libraries
+install.packages("igraph")
+install.packages(c("sna","ggraph"))
+install.packages("ggplot2")
+```
+
+```{r}
+library(igraph)
+library(sna)
+library(ggplot2)
+library(ggraph)
+```
+
+```{r}
+setwd("/Users/charlotteout/Documents/SocialNets/Assignment1_Data")
+#setwd("C:/Users/Nicolò/Desktop/social_nets")
+#setwd("/Users/andreasopedaleriksson/Documents/ETH/Social Networks/HW1")
+```
+
+```{r}
+# Task 1a
+
+affective <- read.csv("2400_affective_w1.csv")
+gen <- read.csv("2400_sex.csv")
+trust <- read.csv("2400_trust_w1.csv")
+```
+
+
+```{r}
+# Task 1b, recode the affective network of wave 1 into a friendship network
+
+#reshape the matrices into square matrices
+affective <- affective[,-1]
+trust <- trust[,-1]
+
+#filter out friendship network
+affective[affective != 2] <- 0
+affective[affective == 2] <- 1
+
+affective <- sapply(affective,as.numeric)
+trust <- sapply(trust, as.numeric)
+```
+
+```{r}
+# Task 1c, calculate basic network descriptives for this friendship network
+
+affective.graph <- graph_from_adjacency_matrix(affective,
+                          mode = "directed",  
+                          diag = FALSE
+                          )
+
+# Number of missing values
+number_of_missings <- length(affective[is.na(affective)]) - nrow(affective)
+
+# Network size
+network_size <- ncol(affective)
+number_of_edges <- length(affective[affective == 1]) - nrow(affective)
+
+
+# Density (number of ties over maximum)
+density <- number_of_edges / (network_size * (network_size - 1))
+
+# Average degree
+gen$indegree <- sna::degree(affective, cmode = "indegree")
+gen$outdegree <- sna::degree(affective, cmode = "outdegree")
+average_indegree <- mean(gen$indegree)
+average_outdegree <- mean(gen$outdegree)
+average_degree <- average_indegree
+
+# Reciprocity ratio 
+reciprocity_ratio <- grecip(affective, measure = "dyadic.nonnull")
+
+# Gender composition in class
+boy_ratio <- nrow(gen[gen$sex == 1,]) / nrow(gen)
+girl_ratio <- nrow(gen[gen$sex == 2,]) / nrow(gen)
+
+# Same gender ties
+boy_tie_network <- affective[gen$sex == 1, gen$sex == 1]
+boy_ties <- length(boy_tie_network[boy_tie_network == 1]) - nrow(boy_tie_network)
+boy_tie_ratio <- boy_ties / number_of_edges
+
+girl_tie_network <- affective[gen$sex == 2, gen$sex == 2]
+girl_ties <- length(girl_tie_network[girl_tie_network == 1]) - nrow(girl_tie_network)
+girl_tie_ratio <- girl_ties / number_of_edges
+
+# Extra measure of choice: Network Assortativity
+network_assort <- assortativity_nominal(affective.graph, types = gen$sex, directed = T)
+
+```
+```{r}
+# Task 1d, plot the friendship network
+
+#create igraph objects
+affective.igraph <- graph_from_adjacency_matrix(affective,
+                                             mode = 'directed',
+                                             diag = FALSE)
+
+trust.igraph <- graph_from_adjacency_matrix(trust,
+                                            mode = 'directed', diag = FALSE)
+
+#add the indegree as an attribute to gen. 
+gen$degree <- sna::degree(affective, cmode = 'indegree')
+
+#add the indegree of the trust network as another attribute to gen. 
+gen$degree2 <- sna::degree(trust, cmode = 'indegree')
+
+```
+
+```{r}
+#the friendship network plotted
+
+ ggraph(affective.igraph, 
+       layout = 'graphopt')+ 
+  geom_edge_fan(alpha = .7,
+                arrow = arrow(length = unit(1, 'mm')),
+                end_cap = circle(3, 'mm'))+
+                
+  geom_node_point(aes(colour = factor(gen$sex), 
+                           size = gen$degree))+ 
+  labs(colour = "Gender", 
+       size = "In-degree of friendship network")+
+  
+  ggtitle("Friendship Network")+
+  
+  theme_graph() 
+```
+```{r}
+# Task 1e, combine the trust and the friendship network
+
+#the trust network plotted
+
+ ggraph(trust.igraph, 
+       layout = 'graphopt')+ 
+  geom_edge_fan(alpha = .7,
+                arrow = arrow(length = unit(1, 'mm')),
+                end_cap = circle(3, 'mm'))+
+  
+  geom_node_point(aes(colour = factor(gen$sex), 
+                           size = gen$degree2))+ 
+  labs(colour = "Gender", 
+       size = "In-degree of trust network")+
+  
+  ggtitle("Trust Network")+
+  
+  theme_graph() 
+
+total <- affective + 2*trust
+
+total.igraph <- graph_from_adjacency_matrix(total,
+                                             mode = 'directed',
+                                             weighted = TRUE,
+                                             diag = FALSE)
+gen$degree3 <- sna::degree(total, cmode = 'indegree')
+```
+
+```{r}
+# plot the two networks together
+ggraph(graph.adjacency(total, weighted = T), 
+       layout = 'graphopt')+ 
+  geom_edge_fan(alpha = 0.7,
+                arrow = arrow(length = unit(1, 'mm')),
+                end_cap = circle(3, 'mm'),
+                aes(color = factor(weight)))+ 
+  geom_node_point(aes(colour = factor(gen$sex), 
+                           size = gen$degree3)) + 
+  labs(colour = "Gender", 
+       size = "In-degree of combined network")+
+  ggtitle("Combined Trust and Friendship Network")+
+  theme_graph() 
+```
+```{r}
+# Task 1f, compute the overlap between the two networks
+
+weight3edges <- length(total[total == 3]) - nrow(total)
+alledges <- (length(total[total == 1]) - nrow(total)) + (length(total[total == 2]) - nrow(total)) + (length(total[total == 3]) - nrow(total))
+
+ratio_overlap <- weight3edges/alledges
+
+print(paste0("ratio_overlap:", round(ratio_overlap, digits = 4)))
+
+just_friends <- length(total[total == 1]) - nrow(total)
+
+justfriends_friends <- just_friends/(just_friends + weight3edges)
+
+print(paste0("justfriends_friends:", round(justfriends_friends, digits = 4)))
+
+
+size_trust_net <- length(trust[trust == 1]) - nrow(trust)
+friendstrust_trust <- weight3edges/size_trust_net
+
+print(paste0("friendsstrust_trust:", round(friendstrust_trust, digits = 4)))
+
+```
+
