@@ -1,4 +1,4 @@
-# ETH-exercises
+# ETH-exercises & smaller projects 
 some graded and ungraded homeworks from different courses offered at ETH Zurich :bulb:
 
 ## PCA on faces :woman: :older_man: :girl: :boy:
