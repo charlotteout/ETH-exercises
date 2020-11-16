@@ -28,9 +28,13 @@ The following two exercises on Elliptic Curve Cryptography formed the first grad
 
 ![](./geometric_addition_points_elliptic_curve.png)
 
-We focus on implementing cryptanalysis of ECDSA based on nonce leakages. I implemented attack algorithms that recover the secret ECDSA signing key based on either complete or partial information about the nonce(s) used in the ECDSA signing algorithm. In the exercise, we had to consider three flavors of cryptanalytic attacks, namely known-nonce attacks, repeated-nonce attacks and partially-known-nonce attacks. 
+In the second part of the assignment, we focus on implementing cryptanalysis of ECDSA based on nonce leakages. We had to implement attack algorithms that recover the secret ECDSA signing key based on either complete or partial information about the nonce(s) used in the ECDSA signing algorithm. In the exercise, we had to consider three flavors of cryptanalytic attacks, namely known-nonce attacks, repeated-nonce attacks and partially-known-nonce attacks. 
 
-## TLC Cryptographic Protocol
+## Implementation of streamlined layer of Transport Layer Protocol 
+This exercise is the second graded homework of the course Information Security Lab offered at ETH Zurich in the autumn semester of 2020. In this lab we investigate and implement a (streamlined) version of one of the most important cryptographic protocols in use today - the Transport Layer Security Protocol, version 1.3 (throughout the lab we will refer to this simply as TLS 1.3). We use the symmetric and asymmetric cryptoprimitives and use them to implement aspects of TLS 1.3. Specifically, we implemented functions for the Session Resumption mechanisms used in the TLS 1.3 Protocol.
+
+Important to note here is that the uploaded files are the code that I wrote. However, with the assignment a skeleton code was provided also containing other code necessary to run the function. Therefore this code cannot be run, and its main purpose is to show an example of an (streamlined) implementation of TLS. 
 
 ## SCION Network
+This exercise is the fourth graded homework of the course Information Security Lab offered at ETH Zurich in the autumn semester of 2020. We work on the future internet architecture SCION, developed at ETH. In this lab we work on Denial of Service attacks. The first part of the lab concerns the implementation of a Denial of Service attack, where we try to amplify the message that we send and spoof our address (to the address of the victim) and in addition we also spoof the path to this victim (this is only needed if the victim is in a different AS as us). The second part of the lab is the implementation of a defence against Denial of Service attack. The main idea is here that we detect whether all the "malicious" packets are coming from one AS, after which we block that entire AS, or if all the malicious packets are coming from one IP, after which we block this IP. 
 
