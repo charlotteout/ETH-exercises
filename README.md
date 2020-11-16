@@ -26,6 +26,8 @@ This exercise was the third graded project of the course Advanced Machine Learni
 ## Elliptic Curve Cryptography.
 The following two exercises on Elliptic Curve Cryptography formed the first graded homework of the course Information Security Lab offered at ETH Zurich in the autumn semester of 2020. In the first part, we focus on implementing ECDSA. In particular, we implement several functions such as the addition of points on elliptic curves and a scalar multiply function. Note that addition on elliptic curves is defined as follows (as indicated in the drawing).
 
+![](./geometric_addition_points_elliptic_curve.png)
+
 We focus on implementing cryptanalysis of ECDSA based on nonce leakages. I implemented attack algorithms that recover the secret ECDSA signing key based on either complete or partial information about the nonce(s) used in the ECDSA signing algorithm. In the exercise, we had to consider three flavors of cryptanalytic attacks, namely known-nonce attacks, repeated-nonce attacks and partially-known-nonce attacks. 
 
 ## TLC Cryptographic Protocol
