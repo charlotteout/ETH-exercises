@@ -23,5 +23,10 @@ This exercise is was the second graded project of the course Advanced Machine Le
 ## Classification of ECG signals
 This exercise was the third graded project of the course Advanced Machine Learning offered at ETH Zurich in the fall semester of 2019. We had to perform multi-class classification on time series data, in the form of ECG signals. In this project we had to perform feature engineering. Based on researching properties of ECG signals, we extracted relevant features from the signal. These were amongst others the R peaks, in particular the amplitude of the, the time interval between the R peaks and the heart rate. For the extraction of these features we made use of the biosppy library. Our final model was xgboost (a gradient boosting classifier). We in addition normalized our data using the Robust Scaler from sk-learn.  
 
+##Elliptic Curve Cryptography.
+This exericise was the first graded homework of the course Information Security Lab offered at ETH Zurich in the autumn semester of 2020. We focus on implementing cryptanalysis of ECDSA based on nonce leakages. I implemented attack algorithms that recover the secret ECDSA signing key based on either complete or partial information about the nonce(s) used in the ECDSA signing algorithm. In the exercise, we had to consider three flavors of cryptanalytic attacks, namely known-nonce attacks, repeated-nonce attacks and partially-known-nonce attacks. 
 
+##TLC Cryptographic Protocol
+
+##SCION Network
 
